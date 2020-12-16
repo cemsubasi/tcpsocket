@@ -14,8 +14,17 @@ gcc tcpserver.c -o tcpserver -pthread
 #include <netinet/tcp.h>
 #include <unistd.h>
 
-FILE *Serverlogs;
+FILE *serverlogs;
 int sockfd, clientfd;
+struct sockaddr_in client;
+
+void clientip(struct sockaddr_in addr, FILE *filepointer){
+      fprintf(filepointer, "%d.%d.%d.%d :",
+          addr.sin_addr.s_addr & 0xff,
+          (addr.sin_addr.s_addr & 0xff00) >> 8,
+          (addr.sin_addr.s_addr & 0xff0000) >> 16,
+          (addr.sin_addr.s_addr & 0xff000000) >> 24);
+  }
 
 //threadmain func
 void *threadMain1(void *arg){
@@ -29,9 +38,9 @@ void *threadMain1(void *arg){
 			fprintf(stdout,"Send error: %s\n",strerror(errno));
 			exit(1);
 		}
-//		Serverlogs = fopen("/home/daddy/Documents/logs/Serverlogs" , "ab");
-//		fprintf(Serverlogs,"%s", buff);
-//		fclose(Serverlogs);
+
+
+
 	}
 }
 
@@ -48,17 +57,29 @@ void *threadMain2(void *arg){
                 }else{
 
 			if(buff[0] == '\0'){
+				clientip(client, stdout);	
 				fprintf(stdout, "Client ayrıldı!\n");
 				exit(1);
 			}
 
 			fprintf(stdout,"%s", buff);
-//			Serverlogs = fopen("/home/daddy/Documents/logs/Serverlogs" , "ab");
-//			fprintf(Serverlogs,"%s", buff);
-//			fclose(Serverlogs);
+//			serverlogs = fopen("./serverlogs" , "ab");
+//			fprintf(serverlogs,"%s", buff);
+//			fclose(serverlogs);
+			serverlogs = fopen("./serverlogs" , "ab");
+			if (serverlogs == NULL){
+				fprintf(stdout, "Send error: %s\n", strerror(errno));
+				exit(1);
+			}
+			clientip(client, serverlogs);
+			fprintf(serverlogs,"%s", buff);
+			fclose(serverlogs);
 		}
         }
 }
+
+
+
 
 //main func
 int main(){
@@ -77,7 +98,7 @@ int main(){
 		exit(1);
 
 	}
-//build socket structures
+//build socket struct
 	server.sin_family      = AF_INET;
 	server.sin_port        = htons(port);
 	server.sin_addr.s_addr = INADDR_ANY;
@@ -107,7 +128,7 @@ int main(){
         }
 
 //accept socket
-	struct sockaddr_in client;
+
 	socklen_t clen = sizeof(client);
 	clientfd = accept(sockfd, (struct sockaddr *)&client, &clen);
 	if(clientfd == -1){
@@ -116,7 +137,8 @@ int main(){
 
 	}
 	
-	fprintf(stdout, "Client Bağlandı!\n");	
+	clientip(client, stdout);	
+	fprintf(stdout, "Client Bağlandı!\n");
 
 //create recv & send threads
 	pretval1 = pthread_create(&tid1, NULL, &threadMain1, &clientfd);

@@ -13,7 +13,7 @@ gcc tcpclient.c -o tcpclient -pthread
 #include <unistd.h>
 #include <arpa/inet.h>
 
-FILE *Clientlogs;
+FILE *clientlogs;
 int sockfd, clientfd;
 char *ipnum = "127.0.0.1";  
 
@@ -29,9 +29,9 @@ void *threadMain1(void *arg){
 			fprintf(stdout,"Send error: %s\n",strerror(errno));
 			exit(1);
 		}
-//		Clientlogs = fopen("/home/daddy/Documents/logs/Clientlogs" , "ab");
-//		fprintf(Clientlogs,"%s", buff);
-//		fclose(Clientlogs);
+//		clientlogs = fopen("/home/daddy/Documents/logs/clientlogs" , "ab");
+//		fprintf(clientlogs,"%s", buff);
+//		fclose(clientlogs);
 	}
 }
 
@@ -53,17 +53,23 @@ void *threadMain2(void *arg){
 			}
 
 			fprintf(stdout,"%s", buff);
-//			Clientlogs = fopen("/home/daddy/Documents/logs/Clientlogs" , "ab");
-//			fprintf(Clientlogs,"%s", buff);
-//			fclose(Clientlogs);
+//			clientlogs = fopen("/home/daddy/Documents/logs/clientlogs" , "ab");
+//			fprintf(clientlogs,"%s", buff);
+//			fclose(clientlogs);
 		}
         }
 }
 
 //main func
 int main(int argc, char *argv[]){
+
+	if(argc > 2){
+		fprintf(stdout, "Too much argument! Usage: ./tcpclient [ip]\n");
+		exit(1);
+	};
 	if(argc > 1)
 		ipnum = argv[1];
+
 	struct sockaddr_in server;
 	int retval, pretval1, pretval2;
 	int port = 54321;
