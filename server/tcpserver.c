@@ -2,7 +2,6 @@
 gcc tcpserver.c -o tcpserver -pthread
 */
 
-//headers
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -38,16 +37,12 @@ void *threadMain1(void *arg){
 			fprintf(stdout,"Send error: %s\n",strerror(errno));
 			exit(1);
 		}
-
-
-
 	}
 }
 
 void *threadMain2(void *arg){
 
         while(1){
-
                 char buff[512] = {0};
                 int retval;
                 retval = recv(*((int *)arg), &buff, 512, 0);
@@ -55,7 +50,6 @@ void *threadMain2(void *arg){
                         fprintf(stdout,"Recv error: %s\n",strerror(errno));
                         exit(1);
                 }else{
-
 			if(buff[0] == '\0'){
 				clientip(client, stdout);	
 				fprintf(stdout, "Client ayrıldı!\n");
@@ -63,9 +57,6 @@ void *threadMain2(void *arg){
 			}
 
 			fprintf(stdout,"%s", buff);
-//			serverlogs = fopen("./serverlogs" , "ab");
-//			fprintf(serverlogs,"%s", buff);
-//			fclose(serverlogs);
 			serverlogs = fopen("./serverlogs" , "ab");
 			if (serverlogs == NULL){
 				fprintf(stdout, "Send error: %s\n", strerror(errno));
@@ -77,9 +68,6 @@ void *threadMain2(void *arg){
 		}
         }
 }
-
-
-
 
 //main func
 int main(){

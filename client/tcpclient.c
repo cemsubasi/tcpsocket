@@ -29,9 +29,6 @@ void *threadMain1(void *arg){
 			fprintf(stdout,"Send error: %s\n",strerror(errno));
 			exit(1);
 		}
-//		clientlogs = fopen("/home/daddy/Documents/logs/clientlogs" , "ab");
-//		fprintf(clientlogs,"%s", buff);
-//		fclose(clientlogs);
 	}
 }
 
@@ -53,9 +50,6 @@ void *threadMain2(void *arg){
 			}
 
 			fprintf(stdout,"%s", buff);
-//			clientlogs = fopen("/home/daddy/Documents/logs/clientlogs" , "ab");
-//			fprintf(clientlogs,"%s", buff);
-//			fclose(clientlogs);
 		}
         }
 }
@@ -82,8 +76,7 @@ int main(int argc, char *argv[]){
 	if(sockfd == -1){
 		fprintf(stdout,"Socket error: %s\n",strerror(errno));
 		exit(1);
-
-		}
+	}
 
 //build socket structures
 	server.sin_family      = AF_INET;
@@ -109,7 +102,6 @@ int main(int argc, char *argv[]){
         if(pretval2 != 0){
                 fprintf(stdout,"pthread_create error: %s\n",strerror(errno));
                 exit(1);
-
         }
 
 //recv & send
